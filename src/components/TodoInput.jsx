@@ -1,36 +1,32 @@
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { useState } from "react";
+import { useTodos } from "../context/TodoContext";
 
-// Create Toggle Context
-const ToggleContext = createContext();
+function TodoInput() {
+  const [text, setText] = useState("");
+  const { addTodo } = useTodos();
 
-// Create Provider
-export function ToggleProvider({ children }) {
-  // Load saved theme from localStorage
-  const [theme, setTheme] = useState(() => {
-    return localStorage.getItem("theme") || "light";
-  });
+  function handleSubmit(e) {
+    e.preventDefault();
 
-  // Save theme whenever it changes
-  useEffect(() => {
-    localStorage.setItem("theme", theme);
-  }, [theme]);
+    if (text.trim() === "") return;
 
-  // Switch between light and dark
-  function toggleTheme() {
-    setTheme((oldTheme) =>
-      oldTheme === "light" ? "dark" : "light"
-    );
+    addTodo(text);
+    setText("");
   }
 
   return (
-    <ToggleContext.Provider value={{ theme, toggleTheme }}>
-      {children}
-    </ToggleContext.Provider>
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        placeholder="Enter your todo"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
+
+      <button type="submit">Add Todo</button>
+    </form>
   );
 }
 
-// Use Toggle Context in other components
-export function useToggle() {
-  return useContext(ToggleContext);
-}
+export default TodoInput;
