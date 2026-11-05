@@ -16,7 +16,7 @@ function TodoItem({ todo }) {
   }
 
   return (
-    <div>
+    <div className="todo-item">
       <input
         type="checkbox"
         checked={todo.completed}
@@ -26,9 +26,11 @@ function TodoItem({ todo }) {
       {isEditing ? (
         <>
           <input
+            type="text"
             value={newText}
             onChange={(e) => setNewText(e.target.value)}
           />
+
           <button onClick={handleEdit}>Save</button>
           <button onClick={() => setIsEditing(false)}>Cancel</button>
         </>
@@ -43,7 +45,10 @@ function TodoItem({ todo }) {
           </span>
 
           <button onClick={() => setIsEditing(true)}>Edit</button>
-          <button onClick={() => deleteTodo(todo.id)}>Delete</button>
+
+          <button onClick={() => deleteTodo(todo.id)}>
+            Delete
+          </button>
         </>
       )}
     </div>

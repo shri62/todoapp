@@ -1,10 +1,17 @@
 
-import { createContext, useContext, useState, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 
 const TodoContext = createContext();
 
 export function TodoProvider({ children }) {
-  // Get saved todos from the browser
+  // Load saved todos
   const [todos, setTodos] = useState(() => {
     const savedTodos = localStorage.getItem("todos");
     return savedTodos ? JSON.parse(savedTodos) : [];
@@ -15,8 +22,8 @@ export function TodoProvider({ children }) {
     localStorage.setItem("todos", JSON.stringify(todos));
   }, [todos]);
 
-  // Add a new todo
-  function addTodo(text) {
+  // Add a todo
+  const addTodo = useCallback((text) => {
     if (text.trim() === "") return;
 
     const newTodo = {
@@ -26,10 +33,10 @@ export function TodoProvider({ children }) {
     };
 
     setTodos((oldTodos) => [...oldTodos, newTodo]);
-  }
+  }, []);
 
-  // Mark a todo complete or active
-  function toggleTodo(id) {
+  // Complete or uncomplete a todo
+  const toggleTodo = useCallback((id) => {
     setTodos((oldTodos) =>
       oldTodos.map((todo) =>
         todo.id === id
@@ -37,17 +44,17 @@ export function TodoProvider({ children }) {
           : todo
       )
     );
-  }
+  }, []);
 
   // Delete a todo
-  function deleteTodo(id) {
+  const deleteTodo = useCallback((id) => {
     setTodos((oldTodos) =>
       oldTodos.filter((todo) => todo.id !== id)
     );
-  }
+  }, []);
 
   // Edit a todo
-  function editTodo(id, newText) {
+  const editTodo = useCallback((id, newText) => {
     if (newText.trim() === "") return;
 
     setTodos((oldTodos) =>
@@ -57,32 +64,39 @@ export function TodoProvider({ children }) {
           : todo
       )
     );
-  }
+  }, []);
 
-  // Delete all completed todos
-  function clearCompleted() {
+  // Clear completed todos
+  const clearCompleted = useCallback(() => {
     setTodos((oldTodos) =>
       oldTodos.filter((todo) => !todo.completed)
     );
-  }
+  }, []);
+
+  // Share values with other components
+  const value = useMemo(() => ({
+    todos,
+    addTodo,
+    toggleTodo,
+    deleteTodo,
+    editTodo,
+    clearCompleted,
+  }), [
+    todos,
+    addTodo,
+    toggleTodo,
+    deleteTodo,
+    editTodo,
+    clearCompleted,
+  ]);
 
   return (
-    <TodoContext.Provider
-      value={{
-        todos,
-        addTodo,
-        toggleTodo,
-        deleteTodo,
-        editTodo,
-        clearCompleted,
-      }}
-    >
+    <TodoContext.Provider value={value}>
       {children}
     </TodoContext.Provider>
   );
 }
 
-// Use Todo Context in other components
 export function useTodos() {
   return useContext(TodoContext);
 }

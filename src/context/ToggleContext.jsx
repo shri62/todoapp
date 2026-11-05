@@ -1,12 +1,18 @@
 
-import { createContext, useContext, useState, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 
 // Create Toggle Context
 const ToggleContext = createContext();
 
-// Create Provider
 export function ToggleProvider({ children }) {
-  // Load saved theme from localStorage
+  // Load saved theme
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("theme") || "light";
   });
@@ -17,20 +23,26 @@ export function ToggleProvider({ children }) {
   }, [theme]);
 
   // Switch between light and dark
-  function toggleTheme() {
+  const toggleTheme = useCallback(() => {
     setTheme((oldTheme) =>
       oldTheme === "light" ? "dark" : "light"
     );
-  }
+  }, []);
+
+  // Share theme values
+  const value = useMemo(() => ({
+    theme,
+    toggleTheme,
+  }), [theme, toggleTheme]);
 
   return (
-    <ToggleContext.Provider value={{ theme, toggleTheme }}>
+    <ToggleContext.Provider value={value}>
       {children}
     </ToggleContext.Provider>
   );
 }
 
-// Use Toggle Context in other components
+// Use Toggle Context
 export function useToggle() {
   return useContext(ToggleContext);
 }

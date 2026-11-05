@@ -5,7 +5,7 @@ function FilterButtons() {
   const { filter, setFilter } = useFilter();
 
   return (
-    <div>
+    <div className="filter-buttons">
       <button onClick={() => setFilter("all")}>
         All
       </button>
@@ -22,4 +22,5 @@ function FilterButtons() {
 }
 
 export default FilterButtons;
+
 
