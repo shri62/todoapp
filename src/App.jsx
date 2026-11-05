@@ -1,17 +1,17 @@
 
 import { TodoProvider } from "./context/TodoContext";
 import { FilterProvider } from "./context/FilterContext";
-import { ToggleProvider, useToggle } from "./context/ToggleContext";
+import { ThemeProvider, useTheme } from "./context/ThemeContext";
 
 import TodoInput from "./components/TodoInput";
 import TodoList from "./components/TodoList";
 import FilterButtons from "./components/FilterButtons";
-import ToggleButton from "./components/ToggleButton";
+import ThemeToggleButton from "./components/ThemeToggleButton";
 
 import "./App.css";
 
 function TodoApp() {
-  const { theme } = useToggle();
+  const { theme } = useTheme();
 
   return (
     <div className={`app ${theme}`}>
@@ -19,7 +19,7 @@ function TodoApp() {
 
         <header className="app-header">
           <h1>My Todo App</h1>
-          <ToggleButton />
+          <ThemeToggleButton />
         </header>
 
         <TodoInput />
@@ -37,9 +37,9 @@ function App() {
   return (
     <TodoProvider>
       <FilterProvider>
-        <ToggleProvider>
+        <ThemeProvider>
           <TodoApp />
-        </ToggleProvider>
+        </ThemeProvider>
       </FilterProvider>
     </TodoProvider>
   );

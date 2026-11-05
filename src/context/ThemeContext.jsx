@@ -8,10 +8,10 @@ import {
   useMemo,
 } from "react";
 
-// Create Toggle Context
-const ToggleContext = createContext();
+// Create Theme Context
+const ThemeContext = createContext();
 
-export function ToggleProvider({ children }) {
+export function ThemeProvider({ children }) {
   // Load saved theme
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("theme") || "light";
@@ -36,13 +36,13 @@ export function ToggleProvider({ children }) {
   }), [theme, toggleTheme]);
 
   return (
-    <ToggleContext.Provider value={value}>
+    <ThemeContext.Provider value={value}>
       {children}
-    </ToggleContext.Provider>
+    </ThemeContext.Provider>
   );
 }
 
-// Use Toggle Context
-export function useToggle() {
-  return useContext(ToggleContext);
+// Use Theme Context
+export function useTheme() {
+  return useContext(ThemeContext);
 }
